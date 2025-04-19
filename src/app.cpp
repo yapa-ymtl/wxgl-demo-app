@@ -7,6 +7,8 @@ bool App::OnInit()
 {
     MainFrame* newFrame = new MainFrame("Main Window");
     newFrame->Show();
+    newFrame->SetClientSize(800,600);
+    newFrame->Center();
 
     return true;
 }
