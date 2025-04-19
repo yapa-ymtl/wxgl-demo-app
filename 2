@@ -1,0 +1,53 @@
+#include "../include/canvas.h"
+
+void MyGLCanvas::initialSetup()
+{
+    wxPaintDC dc(this);
+    SetCurrent(context);
+
+
+    glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    // 2D Projection
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glOrtho(0, GetSize().x, GetSize().y, 0, -1, 1);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+}
+
+void MyGLCanvas::drawTriangle(const float& x_, const float& y_)
+{
+    // Triangle
+    glBegin(GL_TRIANGLES);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glVertex2f(x_, y_);
+        glColor3f(0.0f, 1.0f, 0.0f);
+        glVertex2f(150, 200);
+        glColor3f(0.0f, 0.0f, 1.0f);
+        glVertex2f(200, 100);
+    glEnd();
+}
+
+// void MyGLCanvas::draCircle()
+// {
+//     
+// }
+
+void MyGLCanvas::OnPaint(wxPaintEvent&)
+{
+    initialSetup();
+
+    drawTriangle(1.0f, 0.0f, 0.0f);
+    drawTriangle(10.0f, 10.0f, 10.0f);
+    drawTriangle(20.0f, 10.0f, 10.0f);
+
+    SwapBuffers();
+}
+
+
+void MyGLCanvas::OnResize(wxSizeEvent&)
+{
+    Refresh();
+}

@@ -16,10 +16,22 @@ public:
     }
 
 private:
+    // struct vertex {
+    //     float x, y, z;
+    //
+    // };
     wxGLContext context;
+
+    void populateVertex();
+
+    void initialSetup();
+    void drawTriangle(const float& x_, const float& y_);
+    void drawCircle(const float& cx, const float& cy, const float& r, const int& num_segments = 50);
+    void drawRectangle(const float& x_, const float& y_);
 
     void OnPaint(wxPaintEvent&);
     void OnResize(wxSizeEvent&);
+
 };
 
 #endif // !INCLUDE_CANVAS_H
