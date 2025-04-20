@@ -1,29 +1,20 @@
 #include "../include/mainfram.h"
 
-// wxBEGIN_EVENT_TABLE(SidePanel, wxPanel)
-//     EVT_SLIDER(wxID_ANY, MainFrame::OnSliderChange)
-// wxEND_EVENT_TABLE()
 
 MainFrame::MainFrame(const wxString& title_)
     : wxFrame(nullptr, wxID_ANY, title_)
-    , canvas(new MyGLCanvas(this))
-    , sidePanel(new SidePanel(this))
+    , _canvas(new MyGLCanvas(this))
+    , _sidePanel(new SidePanel(this))
 {
-    // canvas = new MyGLCanvas(this);
-    // sidePanel = new SidePanel(this);
 
     wxBoxSizer* hSizer = new wxBoxSizer(wxHORIZONTAL);
-    hSizer->Add(canvas, 1, wxEXPAND);
-    hSizer->Add(sidePanel, 0, wxEXPAND);
+    hSizer->Add(_canvas, 1, wxEXPAND);
+    hSizer->Add(_sidePanel, 0, wxEXPAND);
 
-    // wxLogMessage("MianFrame constructor");
-    // if (this->canvas == nullptr) wxLogMessage("canvas empty");
-    // else wxLogMessage("canvas not empty");
+    _sidePanel->Hide();
 
-    sidePanel->Hide();
-
-    sidePanel->GetSlider()->Bind(wxEVT_SLIDER, &MainFrame::OnSliderChange, this);
-    sidePanel->GetCheckBox()->Bind(wxEVT_CHECKBOX, &MainFrame::OnCheckChange, this);
+    _sidePanel->getSlider()->Bind(wxEVT_SLIDER, &MainFrame::onSliderChange, this);
+    _sidePanel->getCheckBox()->Bind(wxEVT_CHECKBOX, &MainFrame::onCheckChange, this);
 
     SetSizer(hSizer);
     Layout();
@@ -31,23 +22,23 @@ MainFrame::MainFrame(const wxString& title_)
 
 void MainFrame::toggleSidePanel()
 {
-    sidePanel->Show(!sidePanel->IsShown());
+    _sidePanel->Show(!_sidePanel->IsShown());
     // wxLogMessage("toggle layout");
     Layout();
 }
 
-void MainFrame::OnSliderChange(wxCommandEvent& event)
+void MainFrame::onSliderChange(wxCommandEvent& event_)
 {
-    if (this->canvas == nullptr) {
+    if (this->_canvas == nullptr) {
         wxLogMessage("canvas empty");
     }
-    int rotation = event.GetInt();
+    int rotation = event_.GetInt();
     // wxLogMessage("Rotation MainFrame set to %d", event.GetInt());
-    canvas->setRotation(static_cast<float>(rotation));
+    _canvas->setRotation(static_cast<float>(rotation));
 }
 
-void MainFrame::OnCheckChange(wxCommandEvent& event)
+void MainFrame::onCheckChange(wxCommandEvent& event_)
 {
-    bool show = event.IsChecked();
-    canvas->setVisibility(show);
+    bool show = event_.IsChecked();
+    _canvas->setVisibility(show);
 }

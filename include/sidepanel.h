@@ -7,18 +7,18 @@
 
 class SidePanel : public wxPanel {
 public:
-    SidePanel(wxWindow* parent);
+    SidePanel(wxWindow* parent_);
 
-    wxSlider* GetSlider() const { return slider; }
-    wxCheckBox* GetCheckBox() const { return checkBox; }
+    wxSlider* getSlider() const { return _slider; }
+    wxCheckBox* getCheckBox() const { return _checkBox; }
 
     virtual ~SidePanel();
 private:
-    wxSlider* slider;
-    wxCheckBox* checkBox;
+    wxSlider* _slider;
+    wxCheckBox* _checkBox;
     int rotation = 0;
 
-    void OnSliderChange(wxCommandEvent& event);
+    void _onSliderChange(wxCommandEvent& event_);
 wxDECLARE_EVENT_TABLE();
 };
 

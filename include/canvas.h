@@ -11,36 +11,32 @@ class MyGLCanvas : public wxGLCanvas
 public:
     MyGLCanvas(wxWindow* parent_);
     void setRotation(float angel_);
-    void setVisibility(bool visible);
+    void setVisibility(bool visible_);
 
     ~MyGLCanvas();
 
 private:
-    // struct vertex {
-    //     float x, y, z;
-    //
-    // };
-
     wxWindow* _parent;
-    wxGLContext context;
-    GLuint buttonTexture = 0;
-    int buttonX = 50,
-        buttonY = 450,
-        buttonWidth     = 96,
-        buttonHeight    = 96;
+    wxGLContext _context;
+    GLuint _buttonTexture = 0;
+
+    int _buttonX = 50,
+        _buttonY = 450,
+        _buttonWidth     = 96,
+        _buttonHeight    = 96;
 
     float _rotation = 0;
-    bool showRectangle = true;
+    bool _showRectangle = true;
 
-    void populateVertex();
+    // void populateVertex();
 
-    void initialSetup();
-    void drawTriangle(const int& x_, const int& y_);
-    void drawCircle(const int& cx, const int& cy, const int& r, const int& num_segments = 50);
-    void drawRectangle(const int& x_, const int& y_);
+    void _initialSetup();
+    void _drawTriangle(const int& x_, const int& y_);
+    void _drawCircle(const int& cx_, const int& cy_, const int& r_, const int& num_segments_ = 50);
+    void _drawRectangle(const int& x_, const int& y_);
 
-    void loadButton(const wxString& path_);
-    void drawButton();
+    void _loadButton(const wxString& path_);
+    void _drawButton();
 
     void OnPaint(wxPaintEvent&);
     void OnResize(wxSizeEvent&);

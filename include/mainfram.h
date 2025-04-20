@@ -12,12 +12,13 @@ public:
     MainFrame(const wxString& title_);
     
     void toggleSidePanel();
-    void OnSliderChange(wxCommandEvent& event);
-    void OnCheckChange(wxCommandEvent& event);
+    void onSliderChange(wxCommandEvent& event_);
+    void onCheckChange(wxCommandEvent& event_);
+
 private:
     float _rotation = 0;
-    MyGLCanvas* canvas = nullptr;
-    SidePanel* sidePanel = nullptr;
+    MyGLCanvas* _canvas = nullptr;
+    SidePanel* _sidePanel = nullptr;
 
     // DECLARE_EVENT_TABLE()
 };

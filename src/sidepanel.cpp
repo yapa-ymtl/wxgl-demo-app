@@ -1,36 +1,39 @@
-#include "../include/sidepanel.h"
 #include <wx/log.h>
 #include <wx/sizer.h>
 
+#include "../include/sidepanel.h"
+
 wxBEGIN_EVENT_TABLE(SidePanel, wxPanel)
-    // EVT_SLIDER(wxID_ANY, SidePanel::OnSliderChange)
+    // EVT_SLIDER(wxID_ANY, SidePanel::_onSliderChange)
 wxEND_EVENT_TABLE()
 
-SidePanel::SidePanel(wxWindow* parent)
-    : wxPanel(parent, wxID_ANY)
-    ,slider(new wxSlider(this, wxID_ANY, 0, 0, 100))
-    ,checkBox(new wxCheckBox(this, wxID_ANY, "Toggle Shape"))
+SidePanel::SidePanel(wxWindow* parent_)
+    : wxPanel(parent_, wxID_ANY)
+    ,_slider(new wxSlider(this, wxID_ANY, 0, 0, 100))
+    ,_checkBox(new wxCheckBox(this, wxID_ANY, "Show Rectangle"))
 {
-    // Bind(wxEVT_SLIDER, &SidePanel::OnSliderChange, this);
+    // Bind(wxEVT_SLIDER, &SidePanel::_onSliderChange, this);
     wxBoxSizer* vSizer = new wxBoxSizer(wxVERTICAL);
 
-    slider->SetMin(0);
-    slider->SetMax(360);
-    checkBox->SetValue(true);
-    vSizer->Add(slider, 0, wxALL | wxEXPAND, 10);
-    vSizer->Add(checkBox, 0, wxALL, 10);
+    wxStaticText* sliderLabel = new wxStaticText(this, wxID_ANY, "Rotate Objects");
+    _slider->SetMin(0);
+    _slider->SetMax(360);
+    _checkBox->SetValue(true);
+    vSizer->Add(sliderLabel, 0, wxLEFT | wxRIGHT | wxTOP, 10);
+    vSizer->Add(_slider, 0, wxALL | wxEXPAND, 10);
+    vSizer->Add(_checkBox, 0, wxALL, 10);
 
     SetSizer(vSizer);
 }
 
-void SidePanel::OnSliderChange(wxCommandEvent& event)
+void SidePanel::_onSliderChange(wxCommandEvent& event_)
 {
-    rotation = slider->GetValue();
+    rotation = _slider->GetValue();
     // wxLogMessage("Rotation set to %d", rotation);
 }
 
 SidePanel::~SidePanel()
 {
-    delete slider;
-    delete checkBox;
+    delete _slider;
+    delete _checkBox;
 }

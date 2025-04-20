@@ -5,7 +5,7 @@
 MyGLCanvas::MyGLCanvas(wxWindow* parent_)
     : wxGLCanvas(parent_, wxID_ANY, nullptr)
     , _parent(parent_)
-    , context(this) 
+    , _context(this) 
 {
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
     Bind(wxEVT_SIZE, &MyGLCanvas::OnResize, this);
@@ -19,16 +19,16 @@ void MyGLCanvas::setRotation(float angel_)
     Refresh();
 }
 
-void MyGLCanvas::setVisibility(bool visible)
+void MyGLCanvas::setVisibility(bool visible_)
 {
-    showRectangle = visible;
+    _showRectangle = visible_;
     Refresh();
 }
 
-void MyGLCanvas::initialSetup()
+void MyGLCanvas::_initialSetup()
 {
     wxPaintDC dc(this);
-    SetCurrent(context);
+    SetCurrent(_context);
 
     wxSize size = GetSize();
 
@@ -42,13 +42,12 @@ void MyGLCanvas::initialSetup()
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
-    // Move to center, rotate, then move back
     glTranslatef(size.x/2.0f, size.y/2.0f, 0.0f);
     glRotatef(_rotation, 0.0f, 0.0f, 1.0f);
     glTranslatef(-size.x/2.0f, -size.y/2.0f, 0.0f);
 }
 
-void MyGLCanvas::drawTriangle(const int& x_, const int& y_)
+void MyGLCanvas::_drawTriangle(const int& x_, const int& y_)
 {
     // Triangle
     glBegin(GL_TRIANGLES);
@@ -61,25 +60,24 @@ void MyGLCanvas::drawTriangle(const int& x_, const int& y_)
     glEnd();
 }
 
-void MyGLCanvas::drawCircle(const int& cx, const int& cy, const int& r, const int& num_segments)
+void MyGLCanvas::_drawCircle(const int& cx_, const int& cy_, const int& r_, const int& num_segments_)
 {
     
     glBegin(GL_TRIANGLE_FAN);
     glColor3f(1.0f, 1.0f, 0.0f); // Yellow
-    glVertex2f(cx, cy);
-    for (int i = 0; i <= num_segments; i++) {
-        float theta = 2.0f * 3.1415926f * float(i) / float(num_segments);
-        float x = r * cosf(theta);
-        float y = r * sinf(theta);
-        glVertex2f(cx + x, cy + y);
+    glVertex2f(cx_, cy_);
+    for (int i = 0; i <= num_segments_; i++) {
+        float theta = 2.0f * 3.1415926f * float(i) / float(num_segments_);
+        float x = r_ * cosf(theta);
+        float y = r_ * sinf(theta);
+        glVertex2f(cx_ + x, cy_ + y);
     }
     glEnd();
 }
 
-void MyGLCanvas::drawRectangle(const int& x_, const int& y_)
+void MyGLCanvas::_drawRectangle(const int& x_, const int& y_)
 {
-    if (!showRectangle) return;
-    // Example: Drawing a green rectangle
+    if (!_showRectangle) return;
     glColor3f(1.0f, 1.0f, 1.0f); // Green
 
         glBegin(GL_QUADS);
@@ -92,14 +90,14 @@ void MyGLCanvas::drawRectangle(const int& x_, const int& y_)
 }
 
 
-void MyGLCanvas::loadButton(const wxString& path_) {
+void MyGLCanvas::_loadButton(const wxString& path_) {
     wxImage image(path_, wxBITMAP_TYPE_PNG);
     if (!image.IsOk()) {
         wxLogError("Failed to load image: %s", path_);
         return;
     }
 
-    // Ensure image has alpha channel
+    // make sure image has alpha channel
     if (!image.HasAlpha()) {
         image.InitAlpha();
     }
@@ -121,8 +119,8 @@ void MyGLCanvas::loadButton(const wxString& path_) {
     }
 
     // Create OpenGL texture
-    glGenTextures(1, &buttonTexture);
-    glBindTexture(GL_TEXTURE_2D, buttonTexture);
+    glGenTextures(1, &_buttonTexture);
+    glBindTexture(GL_TEXTURE_2D, _buttonTexture);
 
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
@@ -135,10 +133,10 @@ void MyGLCanvas::loadButton(const wxString& path_) {
     // wxLogMessage("Image loaded and texture created: %dx%d", width, height);
 }
 
-void MyGLCanvas::drawButton()
+void MyGLCanvas::_drawButton()
 {
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, buttonTexture);
+    glBindTexture(GL_TEXTURE_2D, _buttonTexture);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -154,10 +152,10 @@ void MyGLCanvas::drawButton()
     glLoadIdentity();
 
     glBegin(GL_QUADS);
-    glTexCoord2f(0, 0); glVertex2i(buttonX, buttonY);
-    glTexCoord2f(1, 0); glVertex2i(buttonX + buttonWidth, buttonY);
-    glTexCoord2f(1, 1); glVertex2i(buttonX + buttonWidth, buttonY + buttonHeight);
-    glTexCoord2f(0, 1); glVertex2i(buttonX, buttonY + buttonHeight);
+    glTexCoord2f(0, 0); glVertex2i(_buttonX, _buttonY);
+    glTexCoord2f(1, 0); glVertex2i(_buttonX + _buttonWidth, _buttonY);
+    glTexCoord2f(1, 1); glVertex2i(_buttonX + _buttonWidth, _buttonY + _buttonHeight);
+    glTexCoord2f(0, 1); glVertex2i(_buttonX, _buttonY + _buttonHeight);
     glEnd();
 
     glPopMatrix();
@@ -172,20 +170,20 @@ void MyGLCanvas::drawButton()
 
 void MyGLCanvas::OnPaint(wxPaintEvent&)
 {
-    initialSetup();
+    _initialSetup();
 
     const wxString imagePath = wxGetHomeDir() + "/Projects/upwork/Deeprey/Assesment/demoApp/assets/button3.png";
-    loadButton(imagePath);
+    _loadButton(imagePath);
 
-    drawTriangle(100, 100);
-    drawTriangle(0, 0);
-    drawTriangle(200, 200);
+    _drawTriangle(100, 100);
+    _drawTriangle(0, 0);
+    _drawTriangle(200, 200);
 
-    drawRectangle(300,300);
+    _drawRectangle(300,300);
 
-    drawCircle(600, 450, 100);
+    _drawCircle(600, 450, 100);
      
-    drawButton();
+    _drawButton();
     SwapBuffers();
 }
 
@@ -195,15 +193,16 @@ void MyGLCanvas::OnResize(wxSizeEvent&)
     Refresh();
 }
 
-void MyGLCanvas::OnButtonClick(wxMouseEvent& event) {
+void MyGLCanvas::OnButtonClick(wxMouseEvent& event)
+{
     int mouseX = event.GetX();
     int mouseY = event.GetY();
 
     // int height = GetSize().GetHeight();
     // int flippedY = height - mouseY;
 
-    if (mouseX >= buttonX && mouseX <= (buttonX + buttonWidth) &&
-        mouseY >= buttonY && mouseY <= (buttonY + buttonHeight)) {
+    if (mouseX >= _buttonX && mouseX <= (_buttonX + _buttonWidth) &&
+        mouseY >= _buttonY && mouseY <= (_buttonY + _buttonHeight)) {
         
         wxFrame* frame = wxDynamicCast(wxGetTopLevelParent(this), wxFrame);
         if (frame) {
@@ -212,11 +211,10 @@ void MyGLCanvas::OnButtonClick(wxMouseEvent& event) {
                 myFrame->toggleSidePanel();
             }
         }
-        // Do something here
     }
 }
 
 MyGLCanvas::~MyGLCanvas() 
 {
-    if (buttonTexture != 0) glDeleteTextures(1, &buttonTexture);
+    if (_buttonTexture != 0) glDeleteTextures(1, &_buttonTexture);
 }
