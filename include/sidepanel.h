@@ -12,9 +12,14 @@ public:
     wxSlider* GetSlider() const { return slider; }
     wxCheckBox* GetCheckBox() const { return checkBox; }
 
+    virtual ~SidePanel();
 private:
     wxSlider* slider;
     wxCheckBox* checkBox;
+    int rotation = 0;
+
+    void OnSliderChange(wxCommandEvent& event);
+wxDECLARE_EVENT_TABLE();
 };
 
 #endif // !INCLUDE_SIDEPANEL_H

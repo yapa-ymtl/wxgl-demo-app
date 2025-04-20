@@ -13,11 +13,18 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent_)
     // Bind(wxEVT_LEFT_DOWN, &MyGLCanvas::OnMouseClick, this);
 }
 
+void MyGLCanvas::setRotation(float angel_)
+{
+    _rotation = angel_; 
+    Refresh();
+}
+
 void MyGLCanvas::initialSetup()
 {
     wxPaintDC dc(this);
     SetCurrent(context);
 
+    wxSize size = GetSize();
 
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -28,6 +35,11 @@ void MyGLCanvas::initialSetup()
     glOrtho(0, GetSize().x, GetSize().y, 0, -1, 1);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    // Move to center, rotate, then move back
+    glTranslatef(size.x/2.0f, size.y/2.0f, 0.0f);
+    glRotatef(_rotation, 0.0f, 0.0f, 1.0f);
+    glTranslatef(-size.x/2.0f, -size.y/2.0f, 0.0f);
 }
 
 void MyGLCanvas::drawTriangle(const int& x_, const int& y_)
@@ -154,6 +166,7 @@ void MyGLCanvas::drawButton()
 void MyGLCanvas::OnPaint(wxPaintEvent&)
 {
     initialSetup();
+
     const wxString imagePath = wxGetHomeDir() + "/Projects/upwork/Deeprey/Assesment/demoApp/assets/button3.png";
     loadButton(imagePath);
 

@@ -9,12 +9,9 @@ class MainFrame;
 class MyGLCanvas : public wxGLCanvas 
 {
 public:
-    MyGLCanvas(wxWindow* parent_); //     : wxGLCanvas(parent_, wxID_ANY, nullptr)
-    //     , context(this) 
-    // {
-    //     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
-    //     Bind(wxEVT_SIZE, &MyGLCanvas::OnResize, this);
-    // }
+    MyGLCanvas(wxWindow* parent_);
+    void setRotation(float angel_);
+
     ~MyGLCanvas();
 
 private:
@@ -30,6 +27,7 @@ private:
         buttonY = 450,
         buttonWidth     = 96,
         buttonHeight    = 96;
+    float _rotation = 0;
 
     void populateVertex();
 
