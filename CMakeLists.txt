@@ -13,5 +13,6 @@ add_executable(myapp
     src/app.cpp
     src/mainframe.cpp
     src/canvas.cpp
+    src/sidepanel.cpp
 )
 target_link_libraries(myapp ${wxWidgets_LIBRARIES})

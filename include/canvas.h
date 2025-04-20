@@ -7,13 +7,13 @@
 class MyGLCanvas : public wxGLCanvas 
 {
 public:
-    MyGLCanvas(wxWindow* parent_)
-        : wxGLCanvas(parent_, wxID_ANY, nullptr)
-        , context(this) 
-    {
-        Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
-        Bind(wxEVT_SIZE, &MyGLCanvas::OnResize, this);
-    }
+    MyGLCanvas(wxWindow* parent_); //     : wxGLCanvas(parent_, wxID_ANY, nullptr)
+    //     , context(this) 
+    // {
+    //     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
+    //     Bind(wxEVT_SIZE, &MyGLCanvas::OnResize, this);
+    // }
+    ~MyGLCanvas();
 
 private:
     // struct vertex {
@@ -21,16 +21,25 @@ private:
     //
     // };
     wxGLContext context;
+    GLuint buttonTexture = 0;
+    int buttonX = 50,
+        buttonY = 450,
+        buttonWidth     = 96,
+        buttonHeight    = 96;
 
     void populateVertex();
 
     void initialSetup();
-    void drawTriangle(const float& x_, const float& y_);
-    void drawCircle(const float& cx, const float& cy, const float& r, const int& num_segments = 50);
-    void drawRectangle(const float& x_, const float& y_);
+    void drawTriangle(const int& x_, const int& y_);
+    void drawCircle(const int& cx, const int& cy, const int& r, const int& num_segments = 50);
+    void drawRectangle(const int& x_, const int& y_);
+
+    void loadButton(const wxString& path_);
+    void drawButton();
 
     void OnPaint(wxPaintEvent&);
     void OnResize(wxSizeEvent&);
+    void OnButtonClick(wxMouseEvent& event);
 
 };
 

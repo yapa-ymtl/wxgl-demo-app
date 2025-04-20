@@ -2,6 +2,7 @@
 #define INCLUDE_MAINFRAME_H
 
 #include "canvas.h"
+#include "sidepanel.h"
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
@@ -12,6 +13,7 @@ public:
 
 private:
     MyGLCanvas* canvas;
+    SidePanel* sidePanel;
 
 };
 
