@@ -1,7 +1,10 @@
 #include "../include/canvas.h"
+#include "../include/mainfram.h"
+
 
 MyGLCanvas::MyGLCanvas(wxWindow* parent_)
     : wxGLCanvas(parent_, wxID_ANY, nullptr)
+    , _parent(parent_)
     , context(this) 
 {
     Bind(wxEVT_PAINT, &MyGLCanvas::OnPaint, this);
@@ -182,7 +185,13 @@ void MyGLCanvas::OnButtonClick(wxMouseEvent& event) {
     if (mouseX >= buttonX && mouseX <= (buttonX + buttonWidth) &&
         mouseY >= buttonY && mouseY <= (buttonY + buttonHeight)) {
         
-        wxLogMessage("Button clicked!");
+        wxFrame* frame = wxDynamicCast(wxGetTopLevelParent(this), wxFrame);
+        if (frame) {
+            auto myFrame = dynamic_cast<MainFrame*>(frame);
+            if (myFrame) {
+                myFrame->toggleSidePanel();
+            }
+        }
         // Do something here
     }
 }

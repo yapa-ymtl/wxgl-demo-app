@@ -4,6 +4,8 @@
 #include <wx/wx.h>
 #include <wx/glcanvas.h>
 
+class MainFrame;
+
 class MyGLCanvas : public wxGLCanvas 
 {
 public:
@@ -20,6 +22,8 @@ private:
     //     float x, y, z;
     //
     // };
+
+    wxWindow* _parent;
     wxGLContext context;
     GLuint buttonTexture = 0;
     int buttonX = 50,

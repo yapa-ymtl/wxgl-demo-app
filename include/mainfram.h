@@ -11,9 +11,11 @@ class MainFrame : public wxFrame
 public:
     MainFrame(const wxString& title_);
 
+    void toggleSidePanel();
 private:
     MyGLCanvas* canvas;
     SidePanel* sidePanel;
+
 
 };
 
