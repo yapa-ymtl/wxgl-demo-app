@@ -16,6 +16,7 @@ SidePanel::SidePanel(wxWindow* parent)
 
     slider->SetMin(0);
     slider->SetMax(360);
+    checkBox->SetValue(true);
     vSizer->Add(slider, 0, wxALL | wxEXPAND, 10);
     vSizer->Add(checkBox, 0, wxALL, 10);
 

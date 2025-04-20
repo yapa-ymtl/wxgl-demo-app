@@ -13,6 +13,7 @@ public:
     
     void toggleSidePanel();
     void OnSliderChange(wxCommandEvent& event);
+    void OnCheckChange(wxCommandEvent& event);
 private:
     float _rotation = 0;
     MyGLCanvas* canvas = nullptr;

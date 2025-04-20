@@ -11,6 +11,7 @@ class MyGLCanvas : public wxGLCanvas
 public:
     MyGLCanvas(wxWindow* parent_);
     void setRotation(float angel_);
+    void setVisibility(bool visible);
 
     ~MyGLCanvas();
 
@@ -27,7 +28,9 @@ private:
         buttonY = 450,
         buttonWidth     = 96,
         buttonHeight    = 96;
+
     float _rotation = 0;
+    bool showRectangle = true;
 
     void populateVertex();
 

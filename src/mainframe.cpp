@@ -23,6 +23,7 @@ MainFrame::MainFrame(const wxString& title_)
     sidePanel->Hide();
 
     sidePanel->GetSlider()->Bind(wxEVT_SLIDER, &MainFrame::OnSliderChange, this);
+    sidePanel->GetCheckBox()->Bind(wxEVT_CHECKBOX, &MainFrame::OnCheckChange, this);
 
     SetSizer(hSizer);
     Layout();
@@ -43,4 +44,10 @@ void MainFrame::OnSliderChange(wxCommandEvent& event)
     int rotation = event.GetInt();
     // wxLogMessage("Rotation MainFrame set to %d", event.GetInt());
     canvas->setRotation(static_cast<float>(rotation));
+}
+
+void MainFrame::OnCheckChange(wxCommandEvent& event)
+{
+    bool show = event.IsChecked();
+    canvas->setVisibility(show);
 }

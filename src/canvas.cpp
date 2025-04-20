@@ -19,6 +19,12 @@ void MyGLCanvas::setRotation(float angel_)
     Refresh();
 }
 
+void MyGLCanvas::setVisibility(bool visible)
+{
+    showRectangle = visible;
+    Refresh();
+}
+
 void MyGLCanvas::initialSetup()
 {
     wxPaintDC dc(this);
@@ -72,6 +78,7 @@ void MyGLCanvas::drawCircle(const int& cx, const int& cy, const int& r, const in
 
 void MyGLCanvas::drawRectangle(const int& x_, const int& y_)
 {
+    if (!showRectangle) return;
     // Example: Drawing a green rectangle
     glColor3f(1.0f, 1.0f, 1.0f); // Green
 
