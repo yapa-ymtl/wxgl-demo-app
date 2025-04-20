@@ -90,7 +90,8 @@ void MyGLCanvas::_drawRectangle(const int& x_, const int& y_)
 }
 
 
-void MyGLCanvas::_loadButton(const wxString& path_) {
+void MyGLCanvas::_loadButton(const wxString& path_)
+{
     wxImage image(path_, wxBITMAP_TYPE_PNG);
     if (!image.IsOk()) {
         wxLogError("Failed to load image: %s", path_);
@@ -172,8 +173,8 @@ void MyGLCanvas::OnPaint(wxPaintEvent&)
 {
     _initialSetup();
 
-    const wxString imagePath = wxGetHomeDir() + "/Projects/upwork/Deeprey/Assesment/demoApp/assets/button3.png";
-    _loadButton(imagePath);
+    // _loadButton(imagePath);
+    _loadButton("../assets/button.png");
 
     _drawTriangle(100, 100);
     _drawTriangle(0, 0);
