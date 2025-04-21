@@ -1,3 +1,4 @@
+#include <wx/stdpaths.h>
 #include "../include/canvas.h"
 #include "../include/mainfram.h"
 
@@ -45,6 +46,19 @@ void MyGLCanvas::_initialSetup()
     glTranslatef(size.x/2.0f, size.y/2.0f, 0.0f);
     glRotatef(_rotation, 0.0f, 0.0f, 1.0f);
     glTranslatef(-size.x/2.0f, -size.y/2.0f, 0.0f);
+}
+
+void MyGLCanvas::_buttonInitialSetup()
+{
+    if (!_buttonIntialized)
+    {
+        wxString execPath = wxStandardPaths::Get().GetExecutablePath();
+        wxString dirPath = wxPathOnly(execPath);
+        wxString imagePath = dirPath + "../assets/button.png";
+        
+        _loadButton(imagePath);
+        _buttonIntialized = true;
+    }
 }
 
 void MyGLCanvas::_drawTriangle(const int& x_, const int& y_)

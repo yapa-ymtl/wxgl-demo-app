@@ -9,16 +9,18 @@ class MainFrame;
 class MyGLCanvas : public wxGLCanvas 
 {
 public:
-    MyGLCanvas(wxWindow* parent_);
+    explicit MyGLCanvas(wxWindow* parent_);
+
     void setRotation(float angel_);
     void setVisibility(bool visible_);
 
-    ~MyGLCanvas();
+    ~MyGLCanvas() override;
 
 private:
     wxWindow* _parent;
     wxGLContext _context;
     GLuint _buttonTexture = 0;
+    bool _buttonIntialized = false;
 
     int _buttonX = 50,
         _buttonY = 450,
@@ -31,6 +33,7 @@ private:
     // void populateVertex();
 
     void _initialSetup();
+    void _buttonInitialSetup();
     void _drawTriangle(const int& x_, const int& y_);
     void _drawCircle(const int& cx_, const int& cy_, const int& r_, const int& num_segments_ = 50);
     void _drawRectangle(const int& x_, const int& y_);
@@ -41,6 +44,8 @@ private:
     void OnPaint(wxPaintEvent&);
     void OnResize(wxSizeEvent&);
     void OnButtonClick(wxMouseEvent& event);
+
+    // DECLARE_EVENT_TABLE();
 
 };
 
