@@ -54,7 +54,7 @@ void MyGLCanvas::_buttonInitialSetup()
     {
         wxString execPath = wxStandardPaths::Get().GetExecutablePath();
         wxString dirPath = wxPathOnly(execPath);
-        wxString imagePath = dirPath + "../assets/button.png";
+        wxString imagePath = dirPath + "/../assets/button.png";
         
         _loadButton(imagePath);
         _buttonIntialized = true;
@@ -186,9 +186,10 @@ void MyGLCanvas::_drawButton()
 void MyGLCanvas::OnPaint(wxPaintEvent&)
 {
     _initialSetup();
+    _buttonInitialSetup();
 
     // _loadButton(imagePath);
-    _loadButton("../assets/button.png");
+    // _loadButton("../assets/button.png");
 
     _drawTriangle(100, 100);
     _drawTriangle(0, 0);
