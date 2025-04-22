@@ -13,6 +13,7 @@ public:
 
     void setRotation(float angel_);
     void setVisibility(bool visible_);
+    void InitializeButton(const wxString& buttonPath);
 
     ~MyGLCanvas() override;
 
@@ -31,8 +32,8 @@ private:
     bool _showRectangle = true;
 
     // void populateVertex();
-
     void _initialSetup();
+    void _setupFrame();
     void _buttonInitialSetup();
     void _drawTriangle(const int& x_, const int& y_);
     void _drawCircle(const int& cx_, const int& cy_, const int& r_, const int& num_segments_ = 50);

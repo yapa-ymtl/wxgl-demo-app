@@ -1,3 +1,4 @@
+#include <wx/stdpaths.h>
 #include "../include/mainfram.h"
 
 
@@ -6,6 +7,11 @@ MainFrame::MainFrame(const wxString& title_)
     , _canvas(new MyGLCanvas(this))
     , _sidePanel(new SidePanel(this))
 {
+
+    wxString execPath = wxStandardPaths::Get().GetExecutablePath();
+    wxString dirPath = wxPathOnly(execPath);
+    wxString imagePath = dirPath + "/../assets/button.png";
+    if (_canvas) _canvas->InitializeButton(imagePath);
 
     wxBoxSizer* hSizer = new wxBoxSizer(wxHORIZONTAL);
     hSizer->Add(_canvas, 1, wxEXPAND);

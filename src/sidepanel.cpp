@@ -29,7 +29,6 @@ SidePanel::SidePanel(wxWindow* parent_)
 void SidePanel::_onSliderChange(wxCommandEvent& event_)
 {
     rotation = _slider->GetValue();
-    // wxLogMessage("Rotation set to %d", rotation);
 }
 
 SidePanel::~SidePanel()

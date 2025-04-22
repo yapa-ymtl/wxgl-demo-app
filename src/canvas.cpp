@@ -1,4 +1,3 @@
-#include <wx/stdpaths.h>
 #include "../include/canvas.h"
 #include "../include/mainfram.h"
 
@@ -12,6 +11,7 @@ MyGLCanvas::MyGLCanvas(wxWindow* parent_)
     Bind(wxEVT_SIZE, &MyGLCanvas::OnResize, this);
     Bind(wxEVT_LEFT_DOWN, &MyGLCanvas::OnButtonClick, this);
     // Bind(wxEVT_LEFT_DOWN, &MyGLCanvas::OnMouseClick, this);
+    _initialSetup();
 }
 
 void MyGLCanvas::setRotation(float angel_)
@@ -26,7 +26,24 @@ void MyGLCanvas::setVisibility(bool visible_)
     Refresh();
 }
 
-void MyGLCanvas::_initialSetup()
+void MyGLCanvas::InitializeButton(const wxString& buttonPath)
+{
+    if (!_buttonIntialized) {
+        _loadButton(buttonPath);
+        _buttonIntialized = true;
+    }
+}
+
+void MyGLCanvas::_initialSetup() 
+{
+    SetCurrent(_context);
+    
+    // One-time OpenGL setup
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+}
+
+void MyGLCanvas::_setupFrame()
 {
     wxPaintDC dc(this);
     SetCurrent(_context);
@@ -36,29 +53,18 @@ void MyGLCanvas::_initialSetup()
     glClearColor(0.1f, 0.2f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    // 2D Projection
+    // 2D Projection setup
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    glOrtho(0, GetSize().x, GetSize().y, 0, -1, 1);
+    glOrtho(0, size.x, size.y, 0, -1, 1);
+    
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
 
+    // Apply rotation transform
     glTranslatef(size.x/2.0f, size.y/2.0f, 0.0f);
     glRotatef(_rotation, 0.0f, 0.0f, 1.0f);
     glTranslatef(-size.x/2.0f, -size.y/2.0f, 0.0f);
-}
-
-void MyGLCanvas::_buttonInitialSetup()
-{
-    if (!_buttonIntialized)
-    {
-        wxString execPath = wxStandardPaths::Get().GetExecutablePath();
-        wxString dirPath = wxPathOnly(execPath);
-        wxString imagePath = dirPath + "/../assets/button.png";
-        
-        _loadButton(imagePath);
-        _buttonIntialized = true;
-    }
 }
 
 void MyGLCanvas::_drawTriangle(const int& x_, const int& y_)
@@ -103,50 +109,97 @@ void MyGLCanvas::_drawRectangle(const int& x_, const int& y_)
 
 }
 
-
 void MyGLCanvas::_loadButton(const wxString& path_)
 {
+    // Delete existing texture if any
+    if (_buttonTexture != 0) {
+        glDeleteTextures(1, &_buttonTexture);
+        _buttonTexture = 0;
+    }
+
     wxImage image(path_, wxBITMAP_TYPE_PNG);
     if (!image.IsOk()) {
         wxLogError("Failed to load image: %s", path_);
         return;
     }
 
-    // make sure image has alpha channel
     if (!image.HasAlpha()) {
         image.InitAlpha();
     }
 
     int width = image.GetWidth();
     int height = image.GetHeight();
-
-    // Get raw RGB and alpha data
     unsigned char* rgb = image.GetData();
     unsigned char* alpha = image.GetAlpha();
 
-    // Combine RGB and Alpha into RGBA buffer
-    std::vector<unsigned char> rgba(width * height * 4);
-    for (int i = 0; i < width * height; ++i) {
-        rgba[i * 4 + 0] = rgb[i * 3 + 0];            // Red
-        rgba[i * 4 + 1] = rgb[i * 3 + 1];            // Green
-        rgba[i * 4 + 2] = rgb[i * 3 + 2];            // Blue
-        rgba[i * 4 + 3] = alpha ? alpha[i] : 255;    // Alpha
+    if (!rgb) {
+        wxLogError("Failed to get image data");
+        return;
     }
 
-    // Create OpenGL texture
-    glGenTextures(1, &_buttonTexture);
-    glBindTexture(GL_TEXTURE_2D, _buttonTexture);
+    // Create RGBA buffer
+    std::vector<unsigned char> rgba(width * height * 4);
+    for (int i = 0; i < width * height; ++i) {
+        rgba[i * 4 + 0] = rgb[i * 3 + 0];
+        rgba[i * 4 + 1] = rgb[i * 3 + 1];
+        rgba[i * 4 + 2] = rgb[i * 3 + 2];
+        rgba[i * 4 + 3] = alpha ? alpha[i] : 255;
+    }
 
+    // Make sure we're in the correct OpenGL context
+    SetCurrent(_context);
+
+    // Generate texture
+    glGenTextures(1, &_buttonTexture);
+    if (_buttonTexture == 0) {
+        wxLogError("Failed to generate texture");
+        return;
+    }
+
+    // Check for OpenGL errors
+    GLenum err = glGetError();
+    if (err != GL_NO_ERROR) {
+        wxLogError("OpenGL error before texture creation: %d", err);
+        return;
+    }
+
+    glBindTexture(GL_TEXTURE_2D, _buttonTexture);
+    
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0,
                  GL_RGBA, GL_UNSIGNED_BYTE, rgba.data());
 
+    // Check if texture was created successfully
+    err = glGetError();
+    if (err != GL_NO_ERROR) {
+        wxLogError("Failed to create texture: OpenGL error %d", err);
+        glDeleteTextures(1, &_buttonTexture);
+        _buttonTexture = 0;
+        return;
+    }
+
+    // Set texture parameters
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 
     glBindTexture(GL_TEXTURE_2D, 0);
 
-    // wxLogMessage("Image loaded and texture created: %dx%d", width, height);
+    // Verify texture creation
+    GLint width_check = 0;
+    glBindTexture(GL_TEXTURE_2D, _buttonTexture);
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width_check);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+    if (width_check != width) {
+        wxLogError("Texture verification failed. Expected width: %d, Got: %d", width, width_check);
+        glDeleteTextures(1, &_buttonTexture);
+        _buttonTexture = 0;
+        return;
+    }
+
 }
+
 
 void MyGLCanvas::_drawButton()
 {
@@ -185,11 +238,7 @@ void MyGLCanvas::_drawButton()
 
 void MyGLCanvas::OnPaint(wxPaintEvent&)
 {
-    _initialSetup();
-    _buttonInitialSetup();
-
-    // _loadButton(imagePath);
-    // _loadButton("../assets/button.png");
+    _setupFrame();
 
     _drawTriangle(100, 100);
     _drawTriangle(0, 0);
@@ -199,7 +248,7 @@ void MyGLCanvas::OnPaint(wxPaintEvent&)
 
     _drawCircle(600, 450, 100);
      
-    _drawButton();
+    if (_buttonIntialized) _drawButton();
     SwapBuffers();
 }
 
@@ -214,8 +263,6 @@ void MyGLCanvas::OnButtonClick(wxMouseEvent& event)
     int mouseX = event.GetX();
     int mouseY = event.GetY();
 
-    // int height = GetSize().GetHeight();
-    // int flippedY = height - mouseY;
 
     if (mouseX >= _buttonX && mouseX <= (_buttonX + _buttonWidth) &&
         mouseY >= _buttonY && mouseY <= (_buttonY + _buttonHeight)) {
